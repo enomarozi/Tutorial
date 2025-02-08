@@ -133,9 +133,9 @@ root@docker-dev:/DockerApps/fetrian-prod# docker push docker-registry.unand.ac.i
 <p>Masuk ke folder /DockerApps/ dan buat folder appnya contoh "fetrian-prod" dan Copy yang sudah dikonfigurasi di Host Docker-Dev (10.250.30.20) Sebelumnya, dengan command scp</p>
 
 ```console
+root@docker-1:/DockerApps# mkdir -p jrp-prod/src/html
 root@docker-1:/DockerApps/fetrian-prod# scp root@10.250.30.20:/DockerApps/fetrian-prod/docker-compose.yml .
 root@docker-1:/DockerApps/fetrian-prod# scp root@10.250.30.20:/DockerApps/fetrian-prod/ojs_fetrian.sql .
-root@docker-1:/DockerApps/fetrian-prod# mkdir src
 root@docker-1:/DockerApps/fetrian-prod# scp -r root@10.250.30.20:/DockerApps/fetrian-prod/src/ojs-files src/
 root@docker-1:/DockerApps/fetrian-prod# scp root@10.250.30.20:/DockerApps/fetrian-prod/src/entrypoint.sh src/
 root@docker-1:/DockerApps/fetrian-prod# scp -r root@10.250.30.20:/DockerApps/fetrian-prod/src/html/cache src/html/
