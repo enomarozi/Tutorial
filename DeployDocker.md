@@ -62,7 +62,7 @@ service php7.4-fpm start
 nginx -g 'daemon off;'
 ```
 
-<p>Import database dari app, lihat nama databasenya di folder config.inc.php</p>
+<p>Export database dari app, lihat nama databasenya di folder config.inc.php</p>
 
 ```console
 root@docker-dev:/DockerApps/fetrian-prod# grep -i "mysqli" -A5 src/html/config.inc.php
@@ -72,7 +72,7 @@ username = username
 password = password
 name = ojs_fetrian
 ```
-<p>Dan juga pastika ada di mysql, lalu import databasenya</p>
+<p>Dan juga pastika ada di mysql, lalu Export databasenya</p>
 
 ```console
 root@docker-dev:/DockerApps/fetrian-prod# mysqldump -u root -p -d ojs_fetrian > ojs_fetrian.sql
@@ -121,4 +121,100 @@ fetrian                                            3.3.0-20   a8358cc5733c   14 
   <li>User : root</li>
   <li>Pass :</li>
 </ul>
-<p>Masuk ke folder //DockerApps/ dan buat folder appnya</p>
+<p>Masuk ke folder /DockerApps/ dan buat folder appnya contoh "fetrian-prod" dan Copy yang sudah dikonfigurasi di Host Docker-Dev (10.250.30.20) Sebelumnya, dengan command scp</p>
+
+```console
+root@docker-1:/DockerApps/fetrian-prod# scp root@10.250.30.20:/DockerApps/fetrian-prod/docker-compose.yml .
+root@docker-1:/DockerApps/fetrian-prod# scp root@10.250.30.20:/DockerApps/fetrian-prod/ojs_fetrian.sql .
+root@docker-1:/DockerApps/fetrian-prod# mkdir src
+root@docker-1:/DockerApps/fetrian-prod# scp -r root@10.250.30.20:/DockerApps/fetrian-prod/src/ojs-files src/
+root@docker-1:/DockerApps/fetrian-prod# scp root@10.250.30.20:/DockerApps/fetrian-prod/src/entrypoint.sh src/
+root@docker-1:/DockerApps/fetrian-prod# scp -r root@10.250.30.20:/DockerApps/fetrian-prod/src/html/cache src/html/
+root@docker-1:/DockerApps/fetrian-prod# scp -r root@10.250.30.20:/DockerApps/fetrian-prod/src/html/public src/html/
+root@docker-1:/DockerApps/fetrian-prod# scp root@10.250.30.20:/DockerApps/fetrian-prod/src/html/config.inc.php src/html/
+```
+
+<p>Berikut hasil dari seluruh scp nya</p>
+
+```console
+root@docker-1:/DockerApps/fetrian-prod# ls -l
+total 96
+-rw-r--r-- 1 root root   493 Feb  8 13:05 docker-compose.yml
+-rw-r--r-- 1 root root 86891 Feb  8 13:06 ojs_fetrian.sql
+drwxr-xr-x 4 root root  4096 Feb  8 13:16 src
+root@docker-1:/DockerApps/fetrian-prod# ls -l src/
+total 12
+-rwxr-xr-x 1 root root  231 Feb  8 13:15 entrypoint.sh
+drwxr-xr-x 4 root root 4096 Feb  8 13:17 html
+drwxr-xr-x 7 root root 4096 Feb  8 13:14 ojs-files
+root@docker-1:/DockerApps/fetrian-prod# ls -l src/html/
+total 24
+drwxr-xr-x 8 root root  4096 Feb  8 13:16 cache
+-rwxr-xr-x 1 root root 16116 Feb  8 13:17 config.inc.php
+drwxr-xr-x 4 root root  4096 Feb  8 13:17 public
+root@docker-1:/DockerApps/fetrian-prod#
+```
+
+<p>Import DB app yang Export sebelumnya ke HOST MySQL Cluster 10.250.28.2, sebelumnya buat dulu akun dan privileges untuk user mysqlnya di Host 10.250.28.2</p>
+<ul>
+  <li>IP : 10.250.28.2</li>
+  <li>User : root</li>
+  <li>Pass :</li>
+</ul>
+<p>Berikut pembuatan akunya dan DB nya, pastikan juga passwordnya</p>
+
+```mysql
+root@dbMaster:~# mysql -u root -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 7253
+Server version: 8.0.40-31.1 Percona XtraDB Cluster (GPL), Release rel31, Revision 4b32153, WSREP version 26.1.4.3
+
+Copyright (c) 2009-2024 Percona LLC and/or its affiliates
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create user 'fetrian'@'10.250.29.1' identified by 'sensor';
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> grant all privileges on ojs_fetrian.* to 'fetrian'@'10.250.29.1';
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> flush privileges;
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> create database ojs_fetrian;
+Query OK, 1 row affected (0.03 sec)
+
+mysql> exit
+Bye
+```
+<p>Selanjutnya Sinkronkan User dan Privileges yang dibuat di Host DB Cluster 10.250.28.1</p>
+<ul>
+  <li>IP : 10.250.28.1</li>
+  <li>User : root</li>
+  <li>Pass :</li>
+</ul>
+<p>Berikut Perintahnya</p>
+
+```console
+root@dbProxy:~# proxysql-admin --syncusers
+
+Syncing user accounts from PXC(10.250.28.2:3306) to ProxySQL
+Adding user to ProxySQL: fetrian
+
+Note : 'admin' is in proxysql admin user list, this user cannot be added to ProxySQL
+-- (For more info, see https://github.com/sysown/proxysql/issues/709)
+
+Synced PXC users to the ProxySQL database!
+```
+<p>Import DB nya ke host 10.250.28.2, berikut command nya, sesuaikan dengan user dan database yang dibuat sebelumnya</p>
+
+```console
+root@docker-1:/DockerApps/fetrian-prod# mysql -u fetrian -p -h 10.250.28.2 ojs_fetrian < ojs_fetrian.sql
+```
