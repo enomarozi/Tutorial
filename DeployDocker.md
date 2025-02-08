@@ -227,3 +227,31 @@ Synced PXC users to the ProxySQL database!
 ```console
 root@docker-1:/DockerApps/fetrian-prod# mysql -u fetrian -p -h 10.250.28.2 ojs_fetrian < ojs_fetrian.sql
 ```
+<p>Jangan lupa ganti username,password,db_name di file config.inc.php host Production (10.250.29.1)</p>
+
+<p>Ganti Konfig file docker-compose.yml yang sebelumnya di copy jadi seperti ini</p>
+
+```yml
+version: '3.8'
+
+services:
+  web:
+    image: docker-registry.unand.ac.id:8888/fetrian
+    container_name: fetrian
+    ports:
+      - "5005:80"
+    volumes:
+      - ./src/ojs-files:/var/www/ojs-files
+      - ./src/html/public:/var/www/html/public
+      - ./src/html/cache:/var/www/html/cache
+      - ./src/html/config.inc.php:/var/www/html/config.inch.php
+      - ./src/entrypoint.sh:/usr/local/bin/entrypoint.sh
+    entrypoint: ["/usr/local/bin/entrypoint.sh"]
+    restart: always
+```
+<p>Terakhir, lakukan docker pull</p>
+
+```console
+docker pull docker-registry.unand.ac.id:8888/fetrian
+```
+<p>Dan Cek Apakah sudah running, dan tampil halaman websitenya di IP:Port yang sudah di konfigurasi</p>
