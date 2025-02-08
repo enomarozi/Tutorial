@@ -93,3 +93,24 @@ drwxr-xr-x 19 root root 4096 Feb  8 12:13 html
 drwxr-xr-x  6 root root 4096 Feb  8 12:13 ojs-files
 root@docker-dev:/DockerApps/fetrian-prod#
 ```
+
+<p>Lakukan build dengan perintah 'docker-compose build' pada app di direktori app (yang ada docker-compose.yml) seperti berikut, lalu pastikan imagenya berhasil,</p>
+
+```console
+root@docker-dev:/DockerApps/fetrian-prod# docker-compose build
+Building web
+Sending build context to Docker daemon  782.1MB
+Step 1/3 : FROM docker-registry.unand.ac.id:8888/ojs-nginx-php7
+ ---> 3f6256a3fda6
+Step 2/3 : COPY src/html /var/www/html/
+ ---> 1d576501a1cf
+Step 3/3 : EXPOSE 80
+ ---> Running in 279c021beabf
+Removing intermediate container 279c021beabf
+ ---> a8358cc5733c
+Successfully built a8358cc5733c
+Successfully tagged fetrian:3.3.0-20
+root@docker-dev:/DockerApps/fetrian-prod# docker images | grep -i 'fetrian'
+fetrian                                            3.3.0-20   a8358cc5733c   14 seconds ago   609MB
+```
+<p>Jika berhasil, jalankan image dengan perintah 'docker-compose up -d' di direktori app, dan pastikan halaman web tampil dan tidak ada error</p>
