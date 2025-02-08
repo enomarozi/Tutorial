@@ -67,20 +67,29 @@ nginx -g 'daemon off;'
 ```console
 root@docker-dev:/DockerApps/fetrian-prod# grep -i "mysqli" -A5 src/html/config.inc.php
 driver = mysqli
-host = 10.250.30.20
-username = docker
-password = ABCDEF
+host = host
+username = username
+password = password
 name = ojs_fetrian
 ```
+<p>Dan juga pastika ada di mysql, lalu import databasenya</p>
 
+```console
+root@docker-dev:/DockerApps/fetrian-prod# mysqldump -u root -p -d ojs_fetrian > ojs_fetrian.sql
+```
 <p>Hasil Direktory sekarang</p>
 
 ```console
 root@docker-dev:/DockerApps/fetrian-prod# ls -l
-total 16
--rw-r--r-- 1 root root  491 Feb  8 12:20 docker-compose.yml
--rw-r--r-- 1 root root  402 Feb  8 12:15 Dockerfile
--rwxr-xr-x 1 root root  231 Feb  8 12:23 entrypoint.sh
-drwxr-xr-x 4 root root 4096 Feb  8 12:13 src
+total 100
+-rw-r--r-- 1 root root   491 Feb  8 12:20 docker-compose.yml
+-rw-r--r-- 1 root root   402 Feb  8 12:15 Dockerfile
+-rw-r--r-- 1 root root 86891 Feb  8 12:39 ojs_fetrian.sql
+drwxr-xr-x 4 root root  4096 Feb  8 12:40 src
+root@docker-dev:/DockerApps/fetrian-prod# ls -l src/
+total 12
+-rwxr-xr-x  1 root root  231 Feb  8 12:23 entrypoint.sh
+drwxr-xr-x 19 root root 4096 Feb  8 12:13 html
+drwxr-xr-x  6 root root 4096 Feb  8 12:13 ojs-files
 root@docker-dev:/DockerApps/fetrian-prod#
 ```
