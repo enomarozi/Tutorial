@@ -115,6 +115,15 @@ fetrian                                            3.3.0-20   a8358cc5733c   14 
 ```
 <p>Jika berhasil, jalankan image dengan perintah 'docker-compose up -d' di direktori app, dan pastikan halaman web tampil dan tidak ada error</p>
 
+<p>Lanjut lakukan push ke docker registry dengan perintah berikut, sesuaikan command nya</p>
+
+```console
+root@docker-dev:/DockerApps/fetrian-prod# docker tag fetrian:3.3.0-20 docker-registry.unand.ac.id:8888/fetrian:3.3.0-20
+root@docker-dev:/DockerApps/fetrian-prod# docker tag fetrian:3.3.0-20 docker-registry.unand.ac.id:8888/fetrian
+root@docker-dev:/DockerApps/fetrian-prod# docker push docker-registry.unand.ac.id:8888/fetrian:3.3.0-20
+root@docker-dev:/DockerApps/fetrian-prod# docker push docker-registry.unand.ac.id:8888/fetrian
+```
+
 <h3>Konfigurasi Docker di Host Docker Production ( 10.250.29.1 )</h3>
 <ul>
   <li>IP : 10.250.29.1</li>
