@@ -1,12 +1,12 @@
 <h1>OJS</h1>
-<h4>Config docker-compose dan Dockerfile di Host Docker Development ( 10.250.30.20 )</h4>
+<h3>Konfigurasi Docker di Host Docker Development ( 10.250.30.20 )</h3>
 <ul>
   <li>IP : 10.250.30.20</li>
   <li>User : root</li>
   <li>Pass :</li>
 </ul>
 
-<p>Contoh Jurnal fetrian</p>
+<p>Masuk ke /DockerApps/ dan pilih app, Contoh Jurnal fetrian</p>
 
 ```console
 root@docker-dev:/DockerApps/fetrian-prod# ls -l
@@ -114,3 +114,11 @@ root@docker-dev:/DockerApps/fetrian-prod# docker images | grep -i 'fetrian'
 fetrian                                            3.3.0-20   a8358cc5733c   14 seconds ago   609MB
 ```
 <p>Jika berhasil, jalankan image dengan perintah 'docker-compose up -d' di direktori app, dan pastikan halaman web tampil dan tidak ada error</p>
+
+<h3>Konfigurasi Docker di Host Docker Production ( 10.250.29.1 )</h3>
+<ul>
+  <li>IP : 10.250.29.1</li>
+  <li>User : root</li>
+  <li>Pass :</li>
+</ul>
+<p>Masuk ke folder //DockerApps/ dan buat folder appnya</p>
