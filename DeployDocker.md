@@ -244,7 +244,7 @@ services:
       - ./src/ojs-files:/var/www/ojs-files
       - ./src/html/public:/var/www/html/public
       - ./src/html/cache:/var/www/html/cache
-      - ./src/html/config.inc.php:/var/www/html/config.inch.php
+      - ./src/html/config.inc.php:/var/www/html/config.inc.php
       - ./src/entrypoint.sh:/usr/local/bin/entrypoint.sh
     entrypoint: ["/usr/local/bin/entrypoint.sh"]
     restart: always
